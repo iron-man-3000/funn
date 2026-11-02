@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BAUNA KI STAAL - Sizzling Tandoori Chicken @ ₹30</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Outfit:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <style>
+    :root {
+      --primary: #ff4500;
+      --secondary: #ff8c00;
+      --gold: #ffd700;
+      --dark-bg: #0d0c0c;
+      --card-bg: rgba(26, 21, 21, 0.85);
+      --charcoal: #181515;
+      --text: #f5f5f5;
+      --text-muted: #a39e9e;
+      --glow: rgba(255, 69, 0, 0.5);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--dark-bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient Fire & Smoke Background Glows */
+    .bg-fire-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      background: 
+        radial-gradient(circle at 50% 20%, rgba(255, 69, 0, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 15% 85%, rgba(255, 140, 0, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(220, 20, 60, 0.12) 0%, transparent 50%);
+    }
+
+    /* Particle Canvas */
+    #ember-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    /* Header & Animated Title */
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 69, 0, 0.15);
+      border: 1px solid rgba(255, 69, 0, 0.4);
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #ffaa5a;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 0 15px rgba(255, 69, 0, 0.2);
+    }
+
+    .live-dot {
+      width: 10px;
+      height: 10px;
+      background: #00ff66;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #00ff66;
+      animation: pulse-dot 1.5s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.6; }
+    }
+
+    /* The Animated Title: BAUNA KI STALL */
+    .stall-title-container {
+      perspective: 1000px;
+      margin-bottom: 0.6rem;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    .stall-title {
+      font-family: 'Bungee Spice', cursive;
+      font-size: clamp(2rem, 6.2vw, 4.8rem);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: inline-flex;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      align-items: center;
+      justify-content: center;
+      cursor: default;
+      transition: transform 0.3s;
+      filter: drop-shadow(0 0 25px rgba(255, 69, 0, 0.65));
+      animation: titleFloat 3s ease-in-out infinite alternate, flameGlow 2s ease-in-out infinite;
+    }
+
+    .title-word {
+      display: inline-flex;
+      white-space: nowrap;
+      flex-wrap: nowrap;
+    }
+
+    .title-space {
+      display: inline-block;
+      width: 0.35em;
+    }
+
+    .stall-title:hover {
+      transform: scale(1.05) rotate(-1deg);
+    }
+
+    /* Individual animated letters on hover or bounce */
+    .word-letter {
+      display: inline-block;
+      animation: letterWave 2.4s ease-in-out infinite;
+    }
+
+    .word-letter:nth-child(1) { animation-delay: 0.0s; }
+    .word-letter:nth-child(2) { animation-delay: 0.1s; }
+    .word-letter:nth-child(3) { animation-delay: 0.2s; }
+    .word-letter:nth-child(4) { animation-delay: 0.3s; }
+    .word-letter:nth-child(5) { animation-delay: 0.4s; }
+    .word-letter:nth-child(6) { animation-delay: 0.5s; }
+    .word-letter:nth-child(7) { animation-delay: 0.6s; }
+    .word-letter:nth-child(8) { animation-delay: 0.7s; }
+    .word-letter:nth-child(9) { animation-delay: 0.8s; }
+    .word-letter:nth-child(10) { animation-delay: 0.9s; }
+    .word-letter:nth-child(11) { animation-delay: 1.0s; }
+    .word-letter:nth-child(12) { animation-delay: 1.1s; }
+    .word-letter:nth-child(13) { animation-delay: 1.2s; }
+    .word-letter:nth-child(14) { animation-delay: 1.3s; }
+
+    @keyframes titleFloat {
+      0% {
+        transform: translateY(0px) rotate(0deg);
+      }
+      100% {
+        transform: translateY(-8px) rotate(0.8deg);
+      }
+    }
+
+    @keyframes letterWave {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+      }
+      50% {
+        transform: translateY(-9px) scale(1.07);
+        filter: brightness(1.25);
+      }
+    }
+
+    @keyframes flameGlow {
+      0%, 100% {
+        filter: drop-shadow(0 0 18px rgba(255, 69, 0, 0.6)) drop-shadow(0 0 45px rgba(255, 140, 0, 0.4));
+      }
+      50% {
+        filter: drop-shadow(0 0 28px rgba(255, 69, 0, 0.9)) drop-shadow(0 0 60px rgba(255, 215, 0, 0.6));
+      }
+    }
+
+    .tagline {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      font-weight: 600;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 0.3rem;
+    }
+
+    .tagline span {
+      color: var(--gold);
+    }
+
+    /* Main Showcase Grid */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 2.5rem;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 140, 0, 0.25);
+      border-radius: 28px;
+      padding: 2.5rem;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), inset 0 0 35px rgba(255, 69, 0, 0.08);
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      right: -120px;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(255, 69, 0, 0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Product Image Stage */
+    .product-stage {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .food-img-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      aspect-ratio: 1;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(255, 69, 0, 0.35);
+      border: 3px solid rgba(255, 140, 0, 0.4);
+      background: #1e1313;
+    }
+
+    .food-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.02);
+      transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .food-img-wrapper:hover .food-img {
+      transform: scale(1.1) rotate(1deg);
+    }
+
+    /* Steam animation rising from dish */
+    .steam-container {
+      position: absolute;
+      bottom: 25%;
+      display: flex;
+      gap: 25px;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .steam-line {
+      width: 12px;
+      height: 60px;
+      background: linear-gradient(to top, rgba(255, 255, 255, 0.45), transparent);
+      border-radius: 50%;
+      filter: blur(5px);
+      animation: steamRise 3s infinite ease-out;
+    }
+
+    .steam-line:nth-child(2) { animation-delay: 1s; height: 75px; }
+    .steam-line:nth-child(3) { animation-delay: 1.8s; height: 50px; }
+
+    @keyframes steamRise {
+      0% {
+        transform: translateY(0) scaleX(1);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.7;
+        transform: translateY(-40px) scaleX(1.8) skewX(6deg);
+      }
+      100% {
+        transform: translateY(-90px) scaleX(2.5) skewX(-10deg);
+        opacity: 0;
+      }
+    }
+
+    /* Bestseller ribbon */
+    .special-tag {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: linear-gradient(135deg, #e60000, #ff6600);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.78rem;
+      letter-spacing: 1.5px;
+      padding: 6px 14px;
+      border-radius: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      z-index: 4;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .chutney-badge {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      background: rgba(14, 28, 14, 0.9);
+      border: 1px solid rgba(46, 204, 113, 0.5);
+      color: #79f7b5;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 7px 12px;
+      border-radius: 12px;
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      z-index: 4;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Price Badge */
+    .price-sticker {
+      position: absolute;
+      bottom: -15px;
+      right: -10px;
+      background: linear-gradient(135deg, #ffd700, #ff8c00);
+      color: #111;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 30px rgba(255, 140, 0, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.4);
+      z-index: 5;
+      transform: rotate(12deg);
+      animation: stickerPulse 2.5s infinite alternate ease-in-out;
+      border: 3px dashed #111;
+    }
+
+    @keyframes stickerPulse {
+      0% { transform: rotate(10deg) scale(1); }
+      100% { transform: rotate(14deg) scale(1.08); }
+    }
+
+    .price-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .price-value {
+      font-size: 2.1rem;
+      font-weight: 900;
+      line-height: 1;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    /* Product Details */
+    .product-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .item-title {
+      font-size: clamp(2rem, 3.2vw, 2.8rem);
+      font-weight: 900;
+      line-height: 1.15;
+      color: #ffffff;
+      margin-bottom: 0.75rem;
+    }
+
+    .item-title .highlight {
+      background: linear-gradient(90deg, #ff4500, #ffb703);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+
+    .item-description {
+      color: #bbb;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Perk Pills */
+    .perks-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 1.8rem;
+    }
+
+    .perk-pill {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #ddd;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Custom Spice Selector */
+    .option-group {
+      margin-bottom: 1.4rem;
+    }
+
+    .option-title {
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #888;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+
+    .spice-options {
+      display: flex;
+      gap: 10px;
+    }
+
+    .spice-btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      color: #fff;
+      padding: 9px 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.25s ease;
+      text-align: center;
+    }
+
+    .spice-btn:hover {
+      border-color: var(--secondary);
+      background: rgba(255, 140, 0, 0.15);
+    }
+
+    .spice-btn.active {
+      background: linear-gradient(135deg, rgba(255, 69, 0, 0.3), rgba(255, 140, 0, 0.3));
+      border-color: #ff4500;
+      color: #ffd700;
+      box-shadow: 0 0 12px rgba(255, 69, 0, 0.4);
+    }
+
+    /* Quantity and Order Action */
+    .action-row {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+
+    .qty-selector {
+      display: flex;
+      align-items: center;
+      background: #241c1c;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      padding: 4px;
+    }
+
+    .qty-btn {
+      width: 38px;
+      height: 38px;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 1.25rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+
+    .qty-btn:hover {
+      background: rgba(255, 69, 0, 0.3);
+      color: var(--gold);
+    }
+
+    .qty-display {
+      width: 40px;
+      text-align: center;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .order-now-btn {
+      flex: 1;
+      background: linear-gradient(135deg, #ff3c00, #ff8400);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 24px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(255, 60, 0, 0.45);
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .order-now-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 35px rgba(255, 60, 0, 0.65);
+      filter: brightness(1.1);
+    }
+
+    .order-now-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* Stall Highlights Banner */
+    .stall-features {
+      margin-top: 3.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 140, 0, 0.4);
+      background: rgba(255, 69, 0, 0.05);
+    }
+
+    .feature-icon {
+      font-size: 2.2rem;
+      margin-bottom: 0.75rem;
+      display: inline-block;
+    }
+
+    .feature-card h4 {
+      font-size: 1.1rem;
+      color: #fff;
+      margin-bottom: 0.35rem;
+      font-weight: 700;
+    }
+
+    .feature-card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Order Modal / Bill Popup */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 1rem;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .bill-card {
+      background: #181313;
+      border: 2px solid #ff4500;
+      border-radius: 24px;
+      max-width: 440px;
+      width: 100%;
+      padding: 2rem;
+      box-shadow: 0 25px 60px rgba(255, 69, 0, 0.35);
+      animation: popIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      position: relative;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .bill-header {
+      text-align: center;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+      padding-bottom: 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .bill-header h3 {
+      font-size: 1.6rem;
+      color: var(--gold);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .bill-header p {
+      font-size: 0.85rem;
+      color: #999;
+    }
+
+    .bill-items {
+      margin-bottom: 1.5rem;
+    }
+
+    .bill-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+      font-size: 0.95rem;
+    }
+
+    .bill-row.total-row {
+      border-top: 1px dashed rgba(255, 255, 255, 0.3);
+      padding-top: 0.9rem;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #ffaa00;
+    }
+
+    .bill-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .confirm-btn {
+      background: #00c853;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: filter 0.2s;
+    }
+
+    .confirm-btn:hover {
+      filter: brightness(1.15);
+    }
+
+    .cancel-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #aaa;
+      padding: 10px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .cancel-btn:hover {
+      color: #fff;
+      border-color: #fff;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    footer .heart {
+      color: #ff4500;
+    }
+
+    /* Sound notification toast */
+    .toast {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: #1f1b1b;
+      border-left: 4px solid #00ff66;
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 860px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        padding: 1.8rem 1.4rem;
+        gap: 2rem;
+      }
+      
+      .food-img-wrapper {
+        max-width: 320px;
+      }
+
+      .price-sticker {
+        width: 90px;
+        height: 90px;
+        right: 0px;
+        bottom: -10px;
+      }
+
+      .price-value {
+        font-size: 1.7rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stall-title {
+        font-size: clamp(1.35rem, 6.8vw, 2.1rem);
+        letter-spacing: 0.5px;
+      }
+      .tagline {
+        font-size: 0.85rem;
+        gap: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient background glow & ember particle canvas -->
+  <div class="bg-fire-layer"></div>
+  <canvas id="ember-canvas"></canvas>
+
+  <div class="container">
+    <!-- Header with Animated Title -->
+    <header>
+      <div class="live-badge">
+        <span class="live-dot"></span>
+        <span>Tandoor Active • Bhatti 450°C</span>
+      </div>
+
+      <div class="stall-title-container">
+        <h1 class="stall-title" id="stallTitle">
+          <span class="title-word">
+            <span class="word-letter">B</span>
+            <span class="word-letter">A</span>
+            <span class="word-letter">U</span>
+            <span class="word-letter">N</span>
+            <span class="word-letter">A</span>
+          </span>
+          <span class="title-space">&nbsp;</span>
+          <span class="title-word">
+            <span class="word-letter">K</span>
+            <span class="word-letter">I</span>
+          </span>
+          <span class="title-space">&nbsp;</span>
+          <span class="title-word">
+            <span class="word-letter">S</span>
+            <span class="word-letter">T</span>
+            <span class="word-letter">A</span>
+            <span class="word-letter">A</span>
+            <span class="word-letter">L</span>
+          </span>
+        </h1>
+      </div>
+
+      <div class="tagline">
+        <span>🌶️ Desi Swag</span> • <span>🔥 Charcoal Sizzle</span> • <span>🍗 Street Flavors</span>
+      </div>
+    </header>
+
+    <!-- Main Showcase Card -->
+    <main class="hero-grid">
+      <!-- Left: Product Image Stage -->
+      <div class="product-stage">
+        <div class="food-img-wrapper">
+          <span class="special-tag">⭐ Today's Special</span>
+          <!-- Tandoori Chicken Plate served with fresh green mint chutney -->
+          <img 
+            src="https://www.hungrylankan.com/wp-content/uploads/2022/12/dosa-and-sambar-1.jpg" 
+            alt="Sizzling Tandoori Chicken Plate with Fresh Green Mint Chutney" 
+            class="food-img"
+            id="foodImage"
+            loading="eager"
+            referrerpolicy="no-referrer"
+            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?q=80&w=1000&auto=format&fit=crop';"
+          >
+          <div class="chutney-badge">🌿 Plated with Fresh Green Mint Chutney</div>
+          <!-- Steam rising effect -->
+          <div class="steam-container">
+            <div class="steam-line"></div>
+            <div class="steam-line"></div>
+            <div class="steam-line"></div>
+          </div>
+        </div>
+
+        <!-- Eye-catching Price Badge -->
+        <div class="price-sticker">
+          <span class="price-label">Just</span>
+          <span class="price-value">₹30</span>
+          <span class="price-label">Only</span>
+        </div>
+      </div>
+
+      <!-- Right: Product Information & Interactive Ordering -->
+      <div class="product-info">
+        <h2 class="item-title">
+          Charcoal Smoked <br>
+          <span class="highlight">Tandoori Chicken</span>
+        </h2>
+        
+        <p class="item-description">
+          Marinated overnight in secret roasted spices, hung curd, and fresh lemon. 
+          Slow-roasted on glowing charcoal embers inside Bauna's clay tandoor for that unmatched juicy, smoky bite.
+        </p>
+
+        <!-- Perks Pills -->
+        <div class="perks-list">
+          <div class="perk-pill">🧅 Ring Onions Included</div>
+          <div class="perk-pill">🌿 Mint Chutney Free</div>
+          <div class="perk-pill">🍋 Fresh Nimbu Squeeze</div>
+          <div class="perk-pill">⚡ Made Fresh on Order</div>
+        </div>
+
+        <!-- Spice Level Selection -->
+        <div class="option-group">
+          <div class="option-title">Select Spice Intensity</div>
+          <div class="spice-options">
+            <button type="button" class="spice-btn" data-spice="Mild">Mild 🌶️</button>
+            <button type="button" class="spice-btn active" data-spice="Desi Medium">Desi Medium 🔥</button>
+            <button type="button" class="spice-btn" data-spice="Bauna Fire Hazard">Bauna Fire 🔥🔥🔥</button>
+          </div>
+        </div>
+
+        <!-- Quantity & Order CTA -->
+        <div class="action-row">
+          <div class="qty-selector">
+            <button type="button" class="qty-btn" id="decreaseQty" aria-label="Decrease quantity">−</button>
+            <span class="qty-display" id="qtyVal">1</span>
+            <button type="button" class="qty-btn" id="increaseQty" aria-label="Increase quantity">+</button>
+          </div>
+
+          <button type="button" class="order-now-btn" id="orderNowBtn">
+            <span>🔥 Order Now (<span id="totalPrice">₹30</span>)</span>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Stall Features -->
+    <section class="stall-features">
+      <div class="feature-card">
+        <div class="feature-icon">🏺</div>
+        <h4>Clay Tandoor Roasted</h4>
+        <p>Cooked directly on high heat organic sal-wood charcoal for natural rustic smokiness.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">💸</div>
+        <h4>Insane Value @ ₹30</h4>
+        <p>Premium flavor without burning a hole in your pocket. Pure street food royalty.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">✨</div>
+        <h4>Secret Masala Blend</h4>
+        <p>Handcrafted 14-spice mix perfected by Bauna himself over 10 years on the street.</p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p>📍 <strong>BAUNA KI STAAL</strong> — Opposite Street No. 4, Food Corner • Open Daily 5:00 PM – 11:30 PM</p>
+      <p style="margin-top: 6px; font-size: 0.8rem;">Cooked with <span class="heart">❤️</span> and sizzling charcoal passion</p>
+    </footer>
+  </div>
+
+  <!-- Order Receipt Modal -->
+  <div class="modal-overlay" id="orderModal">
+    <div class="bill-card">
+      <div class="bill-header">
+        <h3>Bauna Ki Staal</h3>
+        <p>Order Token #BKS-<span id="tokenNumber">108</span> • Table / Takeaway</p>
+      </div>
+
+      <div class="bill-items">
+        <div class="bill-row">
+          <span>Item:</span>
+          <strong>Tandoori Chicken</strong>
+        </div>
+        <div class="bill-row">
+          <span>Spice Level:</span>
+          <span id="modalSpiceLevel">Desi Medium</span>
+        </div>
+        <div class="bill-row">
+          <span>Quantity:</span>
+          <span id="modalQuantity">1 Plate</span>
+        </div>
+        <div class="bill-row">
+          <span>Rate:</span>
+          <span>₹30 per plate</span>
+        </div>
+        <div class="bill-row total-row">
+          <span>Grand Total:</span>
+          <span id="modalTotalPrice">₹30</span>
+        </div>
+      </div>
+
+      <div class="bill-actions">
+        <button type="button" class="confirm-btn" id="confirmOrderBtn">✅ Confirm & Sizzle Plate</button>
+        <button type="button" class="cancel-btn" id="closeModalBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Toast Notification -->
+  <div class="toast" id="toastMsg">🔥 Order placed! Bauna is tossing your chicken on the grill!</div>
+
+  <script>
+    // --- Audio Synthesis for Tandoor Sizzle & Click Sound ---
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function playSizzleSound() {
+      try {
+        if (!audioCtx) audioCtx = new AudioContext();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        // White noise node for sizzling ember sound
+        const bufferSize = audioCtx.sampleRate * 0.8;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * 0.15;
+        }
+
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(3200, audioCtx.currentTime);
+        filter.Q.setValueAtTime(3.0, audioCtx.currentTime);
+
+        const gainNode = audioCtx.createGain();
+        gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
+
+        noise.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        noise.start();
+      } catch (e) {
+        // Fallback silently if audio context is blocked
+      }
+    }
+
+    // --- Quantity & Pricing State ---
+    const UNIT_PRICE = 30;
+    let quantity = 1;
+    let currentSpice = 'Desi Medium';
+
+    const qtyValEl = document.getElementById('qtyVal');
+    const totalPriceEl = document.getElementById('totalPrice');
+    const decreaseQtyBtn = document.getElementById('decreaseQty');
+    const increaseQtyBtn = document.getElementById('increaseQty');
+    const orderNowBtn = document.getElementById('orderNowBtn');
+    const spiceBtns = document.querySelectorAll('.spice-btn');
+
+    const orderModal = document.getElementById('orderModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const confirmOrderBtn = document.getElementById('confirmOrderBtn');
+    const modalSpiceLevel = document.getElementById('modalSpiceLevel');
+    const modalQuantity = document.getElementById('modalQuantity');
+    const modalTotalPrice = document.getElementById('modalTotalPrice');
+    const tokenNumber = document.getElementById('tokenNumber');
+    const toastMsg = document.getElementById('toastMsg');
+
+    function updatePrice() {
+      const total = quantity * UNIT_PRICE;
+      qtyValEl.textContent = quantity;
+      totalPriceEl.textContent = '₹' + total;
+      modalQuantity.textContent = quantity + (quantity > 1 ? ' Plates' : ' Plate');
+      modalTotalPrice.textContent = '₹' + total;
+    }
+
+    decreaseQtyBtn.addEventListener('click', () => {
+      if (quantity > 1) {
+        quantity--;
+        updatePrice();
+      }
+    });
+
+    increaseQtyBtn.addEventListener('click', () => {
+      if (quantity < 50) {
+        quantity++;
+        updatePrice();
+      }
+    });
+
+    // Spice Buttons
+    spiceBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        spiceBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSpice = btn.getAttribute('data-spice');
+      });
+    });
+
+    // Order Modal Open
+    orderNowBtn.addEventListener('click', () => {
+      modalSpiceLevel.textContent = currentSpice;
+      tokenNumber.textContent = Math.floor(100 + Math.random() * 900);
+      orderModal.classList.add('active');
+      playSizzleSound();
+    });
+
+    closeModalBtn.addEventListener('click', () => {
+      orderModal.classList.remove('active');
+    });
+
+    orderModal.addEventListener('click', (e) => {
+      if (e.target === orderModal) {
+        orderModal.classList.remove('active');
+      }
+    });
+
+    // Confirm Order
+    confirmOrderBtn.addEventListener('click', () => {
+      orderModal.classList.remove('active');
+      playSizzleSound();
+
+      // Confetti burst
+      if (window.confetti) {
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#ff4500', '#ffd700', '#ff8c00', '#ffffff']
+        });
+      }
+
+      // Show toast
+      toastMsg.classList.add('show');
+      setTimeout(() => {
+        toastMsg.classList.remove('show');
+      }, 4000);
+    });
+
+    // --- Interactive Hover Glow for Title Letters ---
+    const letters = document.querySelectorAll('.word-letter');
+    letters.forEach(letter => {
+      letter.addEventListener('mouseenter', () => {
+        letter.style.transform = 'translateY(-14px) scale(1.3) rotate(' + (Math.random() * 20 - 10) + 'deg)';
+        letter.style.color = '#fffb00';
+      });
+      letter.addEventListener('mouseleave', () => {
+        letter.style.transform = '';
+        letter.style.color = '';
+      });
+    });
+
+    // --- Floating Embers Animation on Canvas ---
+    const canvas = document.getElementById('ember-canvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const embers = [];
+    const EMBER_COUNT = 35;
+
+    for (let i = 0; i < EMBER_COUNT; i++) {
+      embers.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 2.5 + 1,
+        speedY: Math.random() * 1.2 + 0.4,
+        speedX: (Math.random() - 0.5) * 0.8,
+        opacity: Math.random() * 0.8 + 0.2,
+        color: Math.random() > 0.4 ? '255, 69, 0' : '255, 180, 0'
+      });
+    }
+
+    function renderEmbers() {
+      ctx.clearRect(0, 0, width, height);
+
+      embers.forEach(ember => {
+        ember.y -= ember.speedY;
+        ember.x += ember.speedX;
+
+        if (ember.y < -10) {
+          ember.y = height + 10;
+          ember.x = Math.random() * width;
+        }
+
+        ctx.beginPath();
+        ctx.arc(ember.x, ember.y, ember.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${ember.color}, ${ember.opacity})`;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = `rgb(${ember.color})`;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(renderEmbers);
+    }
+    renderEmbers();
+  </script>
+</body>
+</html>
